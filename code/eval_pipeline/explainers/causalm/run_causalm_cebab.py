@@ -77,7 +77,7 @@ from utils import (
     ROBERTA,
     ROBERTA_VOCAB_SIZE,
     LSTM,
-    GPT2, PROJECT_DIR
+    GPT2, PROJECT_DIR, load_auth_token
 )
 
 logger = logging.getLogger(__name__)
@@ -262,6 +262,7 @@ def main():
     os.environ["TRANSFORMERS_CACHE"] = str(TRANSFORMERS_CACHE)
     os.environ["WANDB_PROJECT"] = WANDB_PROJECT
 
+    AUTH_TOKEN = load_auth_token()
     # See all possible arguments in src/transformers/training_args.py
     # or by passing the --help flag to this script.
     # We now keep distinct sets of args, for a cleaner separation of concerns.
@@ -419,7 +420,7 @@ def main():
             finetuning_task=data_args.task_name,
             cache_dir=model_args.cache_dir,
             revision=model_args.model_revision,
-            use_auth_token=True if model_args.use_auth_token else None,
+            use_auth_token=AUTH_TOKEN if model_args.use_auth_token else None,
             **config_kwargs
         )
         task_model = task_model_class(task_config, additional_pretraining_model.get_counterfactual_weights())
@@ -439,7 +440,7 @@ def main():
             finetuning_task=data_args.task_name,
             cache_dir=model_args.cache_dir,
             revision=model_args.model_revision,
-            use_auth_token=True if model_args.use_auth_token else None,
+            use_auth_token=AUTH_TOKEN if model_args.use_auth_token else None,
             **config_kwargs
         )
         task_model = task_model_class(task_config, model)
@@ -449,7 +450,7 @@ def main():
         cache_dir=model_args.cache_dir,
         use_fast=model_args.use_fast_tokenizer,
         revision=model_args.model_revision,
-        use_auth_token=True if model_args.use_auth_token else None,
+        use_auth_token=AUTH_TOKEN if model_args.use_auth_token else None,
     )
 
     if model_args.model_architecture == GPT2:

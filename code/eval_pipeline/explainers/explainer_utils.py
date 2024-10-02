@@ -1,4 +1,5 @@
 import numpy as np
+from eval_pipeline.utils import POSITIVE, NEGATIVE, UNKNOWN, unpack_batches
 
 def dataset_aspects_to_onehot(dataset):
     """
@@ -29,3 +30,39 @@ def dataset_aspects_to_onehot(dataset):
 
     reprs_onehot = reprs_onehot.reshape(reprs_onehot.shape[0], -1)
     return reprs_onehot
+
+# INLP and LEACE util functions
+def treatment_to_label(x):
+    if x == NEGATIVE:
+        return 0
+    elif x == UNKNOWN:
+        return 1
+    elif x == POSITIVE:
+        return 2
+    else:
+        return None
+
+
+def label_to_treatment(x):
+    if x == 0:
+        return NEGATIVE
+    elif x == 1:
+        return UNKNOWN
+    elif x == 2:
+        return POSITIVE
+    else:
+        return None
+
+def sort_dev_embeddings(dev_preprocessed, treatment):
+    """ Takes a (embeddings, concept_label, overall_label) tuple for a particular treatment (concept)
+    and breaks these embeddings into a dictionary of {NEGATIVE, UNKNOWN, POSITIVE} samples for
+    sampling during computation of counterfactual.
+    """
+    treatment_samples = {}
+    embeddings = np.array(unpack_batches(dev_preprocessed[0]))
+    labels = np.array(dev_preprocessed[1])
+    unique_labels = np.array([0,1,2])
+    assert (np.unique(labels) == unique_labels).all(), f"Incorrect sentiment labels for treatment {treatment}"
+    for label in unique_labels:
+        treatment_samples[label_to_treatment(label)] = embeddings[labels==label]
+    return treatment_samples

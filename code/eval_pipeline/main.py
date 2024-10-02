@@ -1,12 +1,23 @@
+import sys
+
+#sys.path.append('..')
+sys.path.append('./code/')
+
 import argparse
 import os
 import shutil
+
+HF_HOME = "/cluster/work/cotterell/cguerner/hf_cache"
+HF_DATASETS_CACHE = os.path.join(HF_HOME, "datasets")
+os.environ['HF_HOME'] = HF_HOME
+os.environ["HF_DATASETS_CACHE"] = HF_DATASETS_CACHE
 
 import datasets
 import numpy as np
 import pandas as pd
 
 from eval_pipeline.explainers import CONEXP, CausaLM, INLP, ConceptShap, TCAV, ZeroExplainer, RandomExplainer, SLearner
+from eval_pipeline.explainers.leaceplus import LeacePlus
 from eval_pipeline.models import BERTForCEBaB, RoBERTaForCEBaB, GPT2ForCEBaB, LSTMForCEBaB
 from eval_pipeline.pipeline import run_pipelines
 # TODO: get rid of these seed maps or describe somewhere how they work
@@ -21,8 +32,10 @@ from eval_pipeline.utils import (
     SEEDS_ELDAR2ZEN,
     preprocess_hf_dataset,
     save_output,
-    average_over_seeds, SEEDS_ELDAR, TREATMENTS, CEBAB
+    SEEDS_ELDAR, TREATMENTS, CEBAB
 )
+
+
 
 
 def get_caces_for_ultimate_results_table(args, cebab):
@@ -85,7 +98,20 @@ def get_explainers(seed, args, model):
         slearner,
         causalm,
         TCAV(treatments=TREATMENTS, device=args.device, batch_size=args.batch_size, num_classes=args.num_classes),
-        INLP(treatments=TREATMENTS, device=args.device, batch_size=args.batch_size),
+        INLP(treatments=TREATMENTS, plus=False, device=args.device, batch_size=args.batch_size),
+        INLP(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=5),
+        INLP(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=10),
+        INLP(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=15),
+        INLP(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=20),
+        INLP(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=25),
+        INLP(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=30),
+        LeacePlus(treatments=TREATMENTS, plus=False, device=args.device, batch_size=args.batch_size),
+        LeacePlus(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=5),
+        LeacePlus(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=10),
+        LeacePlus(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=15),
+        LeacePlus(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=20),
+        LeacePlus(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=25),
+        LeacePlus(treatments=TREATMENTS, plus=True, device=args.device, batch_size=args.batch_size, nsamples=30),
         ConceptShap(concepts=TREATMENTS, original_model=model, device=args.device, verbose=args.verbose,
                     batch_size=args.batch_size, num_classes=args.num_classes)
     ]
@@ -114,15 +140,15 @@ def main():
     parser.add_argument('--verbose', type=bool, default=False)
     parser.add_argument('--seeds', nargs='+', default=SEEDS_ELDAR)
     parser.add_argument('--model_architecture', type=str, default=BERT)
-    parser.add_argument('--output_dir', type=str, default=None)
+    parser.add_argument('--output_dir', type=str, default="output")
     parser.add_argument('--device', type=str, default='cuda')
-    parser.add_argument('--eval_split', type=str, default='dev')
-    parser.add_argument('--flush_cache', type=bool, default=False)
+    parser.add_argument('--eval_split', type=str, default='test')
+    parser.add_argument('--flush_cache', type=bool, default=True)
     parser.add_argument('--fasttext_embeddings_path', type=str, default='./eval_pipeline/explainers/causalm/utils/lstm_embeddings.bin')
     args = parser.parse_args()
 
     # data
-    cebab = datasets.load_dataset('CEBaB/CEBaB', use_auth_token=True)
+    cebab = datasets.load_dataset('CEBaB/CEBaB')
     if args.task_name == OPENTABLE_BINARY:
         args.num_classes = 2
     elif args.task_name == OPENTABLE_TERNARY:
@@ -157,14 +183,15 @@ def main():
             print(f'Deleting HuggingFace cache at {hf_cache}.')
             shutil.rmtree(hf_cache, ignore_errors=True)
 
-    # average over the seeds
-    pipeline_outputs_averaged = average_over_seeds(pipeline_outputs)
-
+    
     # save output
     if args.output_dir:
         filename_suffix = f'{args.task_name}__{args.model_architecture}__{args.eval_split}'
-        save_output(os.path.join(args.output_dir, f'final__{filename_suffix}'), filename_suffix,
-                    *pipeline_outputs_averaged)
+        save_output(
+            os.path.join(args.output_dir, f'final__{filename_suffix}'), 
+            filename_suffix,
+            pipeline_outputs
+        )
 
 
 if __name__ == '__main__':

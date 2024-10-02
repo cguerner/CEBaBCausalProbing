@@ -15,7 +15,8 @@ from .modeling import (
     RobertaCausalmForSequenceClassification, GPT2CausalmConfig, RobertaCausalmConfig, LSTMCausalmConfig,
 )
 from .. import Explainer
-from ...utils import BERT, GPT2, ROBERTA, LSTM
+from ...utils import BERT, GPT2, ROBERTA, LSTM, load_auth_token
+
 
 
 class CausaLM(Explainer):
@@ -136,10 +137,11 @@ class CausaLM(Explainer):
 
         else:
             raise RuntimeError(f'Unsupported architecture "{model_architecture}"')
-
-        config = config_class.from_pretrained(pretrained_path, **config_kwargs, use_auth_token=True)
+        
+        auth_token = load_auth_token()
+        config = config_class.from_pretrained(pretrained_path, **config_kwargs, use_auth_token=auth_token)
         if model_architecture == GPT2:
             config.pad_token_id = self.tokenizer.pad_token_id
-        model = model_class.from_pretrained(pretrained_path, config=config, use_auth_token=True)
+        model = model_class.from_pretrained(pretrained_path, config=config, use_auth_token=auth_token)
 
         return model

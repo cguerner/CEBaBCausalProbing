@@ -32,3 +32,12 @@ MODELS = [BERT, T5, GPT2, ROBERTA, LSTM]
 
 # misc
 CEBAB = 'CEBaB'
+
+# auth_token_path
+AUTH_TOKEN_PATH = "/cluster/work/cotterell/cguerner/CEBaB/auth_token.txt"
+
+def load_auth_token():
+    with open(AUTH_TOKEN_PATH) as f:
+        lines = f.readlines()
+
+    return lines[0]

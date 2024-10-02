@@ -81,15 +81,27 @@ def cebab_pipeline(model, explainer, train_dataset, dev_dataset, dataset_type='5
     else:
         model_name = str(model)
 
+    explainer_name = str(explainer)
+    if explainer_name == "LeacePlus":
+        if explainer.plus:
+            explainer_name = "Leace Causal Do"
+        else:
+            explainer_name = "Leace"
+    if explainer_name == "INLP":
+        if explainer.plus:
+            explainer_name = "INLP Causal Do"
+        else:
+            explainer_name = "INLP"
+
     CaCE_per_aspect_direction.columns = pd.MultiIndex.from_tuples(
-        [(model_name, str(explainer), col) if col != 'CaCE' else (model_name, '', col) for col in CaCE_per_aspect_direction.columns])
+        [(model_name, explainer_name, col) if col != 'CaCE' else (model_name, '', col) for col in CaCE_per_aspect_direction.columns])
     ACaCE_per_aspect.columns = pd.MultiIndex.from_tuples(
-        [(model_name, str(explainer), col) if col != 'ACaCE' else (model_name, '', col) for col in ACaCE_per_aspect.columns])
+        [(model_name, explainer_name, col) if col != 'ACaCE' else (model_name, '', col) for col in ACaCE_per_aspect.columns])
     CEBaB_metrics_per_aspect_direction.columns = pd.MultiIndex.from_tuples(
-        [(model_name, str(explainer), col) for col in CEBaB_metrics_per_aspect_direction.columns])
+        [(model_name, explainer_name, col) for col in CEBaB_metrics_per_aspect_direction.columns])
     CEBaB_metrics_per_aspect.columns = pd.MultiIndex.from_tuples(
-        [(model_name, str(explainer), col) for col in CEBaB_metrics_per_aspect.columns])
-    CEBaB_metrics.index = pd.MultiIndex.from_product([[model_name], [str(explainer)], CEBaB_metrics.index])
+        [(model_name, explainer_name, col) for col in CEBaB_metrics_per_aspect.columns])
+    CEBaB_metrics.index = pd.MultiIndex.from_product([[model_name], [explainer_name], CEBaB_metrics.index])
     
     # performance report
     performance_report_index = ['macro-f1', 'accuracy']

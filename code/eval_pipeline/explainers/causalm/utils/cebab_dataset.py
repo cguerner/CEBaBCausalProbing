@@ -1,6 +1,6 @@
 import datasets
 
-from .consts import CAUSALM_CC_LABEL_COL, CAUSALM_TC_LABEL_COL
+from .consts import CAUSALM_CC_LABEL_COL, CAUSALM_TC_LABEL_COL, load_auth_token
 
 # data values
 POSITIVE = 'Positive'
@@ -48,7 +48,7 @@ def to_ternary(example):
 
 
 def get_cebab(task_name):
-    cebab = datasets.load_dataset('CEBaB/CEBaB', use_auth_token=True)
+    cebab = datasets.load_dataset('CEBaB/CEBaB', use_auth_token=load_auth_token())
 
     # filter out all no majority examples
     cebab = cebab.filter(lambda example: example['review_majority'] != NO_MAJORITY)

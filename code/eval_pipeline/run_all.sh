@@ -1,40 +1,40 @@
 ## BERT
 # binary
-# python main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_binary --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_binary --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_binary --eval_split dev
 
 # ternary
-python main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_ternary --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_ternary --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_ternary --eval_split dev
 
 # 5-way
-python main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_5_way --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_5_way --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture bert-base-uncased --task_name opentable_5_way --eval_split dev
 
 ## RoBERTa
 # binary
-python main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_binary --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_binary --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_binary --eval_split dev
 
 # ternary
-python main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_ternary --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_ternary --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_ternary --eval_split dev
 
 # 5-way
-python main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_5_way --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_5_way --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture roberta-base --task_name opentable_5_way --eval_split dev
 
 ## GPT2
 # binary
-python main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_binary --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_binary --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_binary --eval_split dev
 
 # ternary
-python main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_ternary --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_ternary --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_ternary --eval_split dev
 
 # 5-way
-python main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_5_way --eval_split test
+sbatch --account=es_cott --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_5_way --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture gpt2 --task_name opentable_5_way --eval_split dev
 
 ## T5
@@ -52,7 +52,7 @@ python main.py --output_dir output --flush_cache true --model_architecture gpt2 
 
 ## LSTM
 # binary
-python main.py --output_dir output --flush_cache true --model_architecture lstm --task_name opentable_binary --eval_split test
+sbatch --account=es_sachan --ntasks=1 --time=04:00:00 --mem-per-cpu=64G --tmp=64G --gpus=1 --gres=gpumem:20g --wrap "python code/eval_pipeline/main.py --output_dir output --flush_cache true --model_architecture lstm --task_name opentable_binary --eval_split test"
 # python main.py --output_dir output --flush_cache true --model_architecture lstm --task_name opentable_binary --eval_split dev
 
 # ternary
